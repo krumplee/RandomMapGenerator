@@ -26,6 +26,7 @@
           <argument>
             <kind>1</kind>
             <string>/// Create the level
+
 // Resize
 room_width = (CELL_WIDTH/16) * 720;
 room_height = (CELL_HEIGHT/16) * 720;
@@ -36,6 +37,9 @@ var height = room_height div CELL_HEIGHT;
 
 // Create the grid
 grid = ds_grid_create(width,height);
+
+// Creste the pathfinding grid
+grid_path = mp_grid_create(0, 0, width, height, CELL_WIDTH, CELL_HEIGHT);
 
 // Fill the grid with the void
 ds_grid_set_region(grid, 0, 0, width-1, height-1, VOID);
@@ -119,6 +123,8 @@ for (var yy = 0; yy &lt; height; yy++){
             if(point_distance(ex, ey, obj_player.x, obj_player.y) &gt; 120 and irandom(odds) = odds){
                 instance_create(ex, ey, obj_enemy);
             } 
+        } else {
+            mp_grid_add_cell(grid_path,xx,yy);
         }
     }
 }
@@ -147,61 +153,84 @@ for (var yy = 0; yy &lt; height*2; yy++){
             
             if (right) {
                 if (bottom) {
-                    tile_add(bg_walltiles, tw*4, th*1, tw, th, tx+tw, ty, DEPTH+1);
+                    tile_add(bg_walltiles, tw*4, th*1, tw, th, tx+tw, ty, -ty);
                 } else if (top) {
                     if (top_right) {
-                        tile_add(bg_walltiles, tw*4, th*0, tw, th, tx+tw, ty-th, DEPTH+2);
+                        tile_add(bg_walltiles, tw*4, th*0, tw, th, tx+tw, ty-th, -ty);
                     } else {
-                        tile_add(bg_walltiles, tw*3, th*0, tw, th, tx, ty-th, DEPTH+2);
+                        tile_add(bg_walltiles, tw*3, th*0, tw, th, tx, ty-th, -ty);
                     }
-                    tile_add(bg_walltiles, tw*0, th*1, tw, th, tx+tw, ty, DEPTH+2);
+                    tile_add(bg_walltiles, tw*0, th*1, tw, th, tx+tw, ty, -ty);
                 } else {
-                    tile_add(bg_walltiles, tw*0, th*1, tw, th, tx+tw, ty, DEPTH+2);
+                    tile_add(bg_walltiles, tw*0, th*1, tw, th, tx+tw, ty, -ty);
                 }
             }
             
             if (left) {
                 if (bottom) {
-                    tile_add(bg_walltiles, tw*3, th*1, tw, th, tx-tw, ty, DEPTH+1);
+                    tile_add(bg_walltiles, tw*3, th*1, tw, th, tx-tw, ty, -ty);
                 } else if (top) {
                     if (top_left) {
-                        tile_add(bg_walltiles, tw*3, th*0, tw, th, tx-tw, ty-th, DEPTH+2);
+                        tile_add(bg_walltiles, tw*3, th*0, tw, th, tx-tw, ty-th, -ty);
                     } else {
-                        tile_add(bg_walltiles, tw*4, th*0, tw, th, tx, ty-th, DEPTH+2);
+                        tile_add(bg_walltiles, tw*4, th*0, tw, th, tx, ty-th, -ty);
                     }
-                    tile_add(bg_walltiles, tw*2, th*1, tw, th, tx-tw, ty, DEPTH+2);
+                    tile_add(bg_walltiles, tw*2, th*1, tw, th, tx-tw, ty, -ty);
                 } else {
-                    tile_add(bg_walltiles, tw*2, th*1, tw, th, tx-tw, ty, DEPTH+2);
+                    tile_add(bg_walltiles, tw*2, th*1, tw, th, tx-tw, ty, -ty);
                 }
             }
             
             if (top) {
                 if (!top_right) {
-                    tile_add(bg_walltiles, tw*2, th*2, tw, th, tx, ty-th, DEPTH+1);
+                    tile_add(bg_walltiles, tw*2, th*2, tw, th, tx, ty-th, -ty);
                 } else if (!top_left) {
-                    tile_add(bg_walltiles, tw*0, th*2, tw, th, tx, ty-th, DEPTH+1);
+                    tile_add(bg_walltiles, tw*0, th*2, tw, th, tx, ty-th, -ty);
                 } else {
-                    tile_add(bg_walltiles, tw*1, th*2, tw, th, tx, ty-th, DEPTH+1);
+                    tile_add(bg_walltiles, tw*1, th*2, tw, th, tx, ty-th, -ty);
                 }
             }
             
             if (bottom) {
                 if (!bottom_right) {
-                    tile_add(bg_walltiles, tw*2, th*0, tw, th, tx, ty, DEPTH);
+                    tile_add(bg_walltiles, tw*2, th*0, tw, th, tx, ty, -ty-tw);
                 } else if (!bottom_left) {
-                    tile_add(bg_walltiles, tw*0, th*0, tw, th, tx, ty, DEPTH);
+                    tile_add(bg_walltiles, tw*0, th*0, tw, th, tx, ty, -ty-tw);
                 } else {
-                    tile_add(bg_walltiles, tw*1, th*0, tw, th, tx, ty, DEPTH);
+                    tile_add(bg_walltiles, tw*1, th*0, tw, th, tx, ty, -ty-tw);
                 }
             }
         }
     }
 }
+global.pos = -obj_player.y;
 
 
 
 
-
+</string>
+          </argument>
+        </arguments>
+      </action>
+    </event>
+    <event eventtype="3" enumb="0">
+      <action>
+        <libid>1</libid>
+        <id>603</id>
+        <kind>7</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>2</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>global.pos = -obj_player.y;
 </string>
           </argument>
         </arguments>
@@ -254,6 +283,31 @@ var key = get_string("What will you name the room?", "default");
 var val = random_get_seed();
 ini_write_real("Rooms", key, val);
 ini_close();
+</string>
+          </argument>
+        </arguments>
+      </action>
+    </event>
+    <event eventtype="7" enumb="5">
+      <action>
+        <libid>1</libid>
+        <id>603</id>
+        <kind>7</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>2</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>/// Destroy grids
+ds_grid_destroy(grid);
+mp_grid_destroy(grid_path);
 </string>
           </argument>
         </arguments>
