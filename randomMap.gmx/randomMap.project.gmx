@@ -7,6 +7,7 @@
   <sounds name="sound"/>
   <sprites name="sprites">
     <sprite>sprites\spr_player</sprite>
+    <sprite>sprites\spr_enemy</sprite>
   </sprites>
   <backgrounds name="background">
     <background>background\bg_floor</background>
@@ -18,22 +19,22 @@
     <script>scripts\scr_move.gml</script>
     <script>scripts\scr_grid_place_meeting.gml</script>
   </scripts>
-  <fonts name="fonts">
-    <font>fonts\font0</font>
-  </fonts>
+  <fonts name="fonts"/>
   <objects name="objects">
     <object>objects\Level</object>
     <object>objects\obj_player</object>
+    <object>objects\obj_enemy</object>
   </objects>
   <rooms name="rooms">
     <room>rooms\room0</room>
   </rooms>
-  <constants number="5">
+  <constants number="6">
     <constant name="CELL_WIDTH">32</constant>
     <constant name="CELL_HEIGHT">32</constant>
     <constant name="FLOOR">-5</constant>
     <constant name="WALL">-6</constant>
     <constant name="VOID">-7</constant>
+    <constant name="DEPTH">-10</constant>
   </constants>
   <help>
     <rtf>help.rtf</rtf>
