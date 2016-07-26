@@ -1,4 +1,4 @@
-///scr_grid_palce_meeting();
+///scr_grid_palce_meeting(x,y);
 var xx = argument[0];
 var yy = argument[1];
 

@@ -32,8 +32,8 @@ room_width = (CELL_WIDTH/16) * 720;
 room_height = (CELL_HEIGHT/16) * 720;
 
 // Set the grid width and height
-var width = room_width div CELL_WIDTH;
-var height = room_height div CELL_HEIGHT;
+width = room_width div CELL_WIDTH;
+height = room_height div CELL_HEIGHT;
 
 // Create the grid
 grid = ds_grid_create(width,height);
@@ -136,6 +136,10 @@ var th = CELL_HEIGHT/2;
 // Add the tiles
 for (var yy = 0; yy &lt; height*2; yy++){
     for(var xx = 0; xx &lt; width*2; xx++){
+    if(grid[# xx,yy]==WALL){
+    instance_create(xx*CELL_WIDTH,yy*CELL_HEIGHT,obj_wall);
+}
+
         if (grid[# xx div 2, yy div 2] == FLOOR){
             // Get the tile's x and y
             var tx = xx*tw;
@@ -203,8 +207,6 @@ for (var yy = 0; yy &lt; height*2; yy++){
         }
     }
 }
-global.pos = -obj_player.y;
-
 
 
 
@@ -230,8 +232,7 @@ global.pos = -obj_player.y;
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>global.pos = -obj_player.y;
-</string>
+            <string></string>
           </argument>
         </arguments>
       </action>
