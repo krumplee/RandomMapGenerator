@@ -27,6 +27,67 @@
             <kind>1</kind>
             <string>depth = -y;
 canAttack = true;
+maxhp = 100;
+hp = maxhp;
+reg = 1;
+alarm[11] = 1;
+</string>
+          </argument>
+        </arguments>
+      </action>
+    </event>
+    <event eventtype="1" enumb="0">
+      <action>
+        <libid>1</libid>
+        <id>514</id>
+        <kind>0</kind>
+        <userelative>-1</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>1</exetype>
+        <functionname>action_draw_text</functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>2</kind>
+            <string></string>
+          </argument>
+          <argument>
+            <kind>0</kind>
+            <string>0</string>
+          </argument>
+          <argument>
+            <kind>0</kind>
+            <string>0</string>
+          </argument>
+        </arguments>
+      </action>
+    </event>
+    <event eventtype="2" enumb="11">
+      <action>
+        <libid>1</libid>
+        <id>603</id>
+        <kind>7</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>2</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>/// Regeneration
+if(hp &lt; maxhp){
+    hp += 1;
+}
+alarm[11] = room_speed / reg;
 </string>
           </argument>
         </arguments>
@@ -82,6 +143,12 @@ scr_move(hspd, vspd);
 
 // Set depth
 depth = -y;
+
+// Player death
+if(hp &lt;= 0){
+    show_message("Game Over");
+   room_restart();
+}
 </string>
           </argument>
         </arguments>
@@ -136,6 +203,9 @@ draw_text(10, 5, "Enemies: " + string(instance_number(obj_enemy)));
 
 draw_set_color(c_yellow);
 draw_text(10, 25, "Walls: " + string(instance_number(obj_wall)));
+
+draw_set_color(c_white);
+draw_text(10,45, "Health: " + string(hp))
 </string>
           </argument>
         </arguments>
