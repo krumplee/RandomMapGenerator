@@ -31,6 +31,13 @@ maxhp = 100;
 hp = maxhp;
 reg = 1;
 alarm[11] = 1;
+dirc = 0;
+maxmana = 200;
+mana = maxmana;
+canManareg = true;
+canDash = true;
+dashing = false;
+spd = 3;
 </string>
           </argument>
         </arguments>
@@ -93,6 +100,76 @@ alarm[11] = room_speed / reg;
         </arguments>
       </action>
     </event>
+    <event eventtype="2" enumb="10">
+      <action>
+        <libid>1</libid>
+        <id>603</id>
+        <kind>7</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>2</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>canManareg = true;
+</string>
+          </argument>
+        </arguments>
+      </action>
+    </event>
+    <event eventtype="2" enumb="2">
+      <action>
+        <libid>1</libid>
+        <id>603</id>
+        <kind>7</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>2</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>canDash = true;
+</string>
+          </argument>
+        </arguments>
+      </action>
+    </event>
+    <event eventtype="2" enumb="1">
+      <action>
+        <libid>1</libid>
+        <id>603</id>
+        <kind>7</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>2</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>dashing = false;
+spd = 3;
+</string>
+          </argument>
+        </arguments>
+      </action>
+    </event>
     <event eventtype="2" enumb="0">
       <action>
         <libid>1</libid>
@@ -134,7 +211,6 @@ alarm[11] = room_speed / reg;
           <argument>
             <kind>1</kind>
             <string>/// Get input and move
-var spd = 3;
 var hspd = spd * (keyboard_check(ord('D')) - keyboard_check(ord('A')));
 var vspd = spd * (keyboard_check(ord('S')) - keyboard_check(ord('W')));
 
@@ -144,17 +220,44 @@ scr_move(hspd, vspd);
 // Set depth
 depth = -y;
 
+// Set direction
+if(keyboard_check(ord('W'))){dirc = 1}
+if(keyboard_check(ord('S'))){dirc = 3}
+if(keyboard_check(ord('A'))){dirc = 2}
+if(keyboard_check(ord('D'))){dirc = 0}
+
+// Manareg
+if(canManareg and mana &lt; maxmana){
+    mana++;
+}
+
+// Dash
+if(keyboard_check(ord('2')) and canDash and mana &gt;= 50){
+    spd = 6;
+    dashing = true;
+    mana -= 50;
+    canDash = false;
+    canManareg = false;
+    alarm[1] = room_speed/2;
+    alarm[2] = room_speed * 5;
+    alarm[10] = room_speed * 3;
+}
+if(dashing){
+    instance_create(x,y,obj_player_dash);
+}
+
 // Player death
 if(hp &lt;= 0){
     show_message("Game Over");
    room_restart();
 }
+
 </string>
           </argument>
         </arguments>
       </action>
     </event>
-    <event eventtype="6" enumb="50">
+    <event eventtype="6" enumb="51">
       <action>
         <libid>1</libid>
         <id>603</id>
@@ -171,10 +274,13 @@ if(hp &lt;= 0){
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>if(canAttack){
+            <string>if(canAttack and mana &gt;= 30){
     instance_create(x,y,obj_fireball);
     canAttack = false;
+    canManareg = false;
+    mana -= 30;
     alarm[0] = room_speed / 2;
+    alarm[10] = room_speed * 3;
 }
 </string>
           </argument>
@@ -198,14 +304,46 @@ if(hp &lt;= 0){
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>draw_set_color(c_red);
-draw_text(10, 5, "Enemies: " + string(instance_number(obj_enemy)));
+            <string>// Draw HP and Mana
+draw_set_valign(fa_middle);
+draw_set_halign(fa_left);
 
-draw_set_color(c_yellow);
-draw_text(10, 25, "Walls: " + string(instance_number(obj_wall)));
+draw_set_color(c_red);
+draw_text(10,10, "Health: " + string(hp))
+draw_rectangle(view_wview[1] / 2 - view_wview[1] / 4, view_hview[1]-45, view_wview[1] / 2 + view_wview[1] / 4,view_hview[1] - 75, true);
+draw_rectangle(view_wview[1] / 2 - view_wview[1] / 4, view_hview[1]-45, view_wview[1] / 2 - view_wview[1] / 4 + hp/maxhp*view_wview[1]/2,view_hview[1] - 75, false);
+
+draw_set_color(c_blue);
+draw_text(10, 25, "Mana: " + string(mana));
+draw_rectangle(view_wview[1] / 2 - view_wview[1] / 4, view_hview[1]-10, view_wview[1] / 2 + view_wview[1] / 4,view_hview[1] - 40, true);
+draw_rectangle(view_wview[1] / 2 - view_wview[1] / 4, view_hview[1]-10, view_wview[1] / 2 - view_wview[1] / 4 + mana/maxmana*view_wview[1]/2,view_hview[1] - 40, false);
+
+draw_set_halign(fa_center);
 
 draw_set_color(c_white);
-draw_text(10,45, "Health: " + string(hp))
+draw_text(view_wview[1] / 2, view_hview[1] - 60, string(hp) + "/" + string(maxhp));
+draw_text(view_wview[1] / 2, view_hview[1] - 25, string(mana) + "/" + string(maxmana));
+
+// Draw spells
+size = 64;
+top = alarm[2] / (room_speed * 5) * size;
+draw_set_halign(fa_top)
+draw_sprite_part(spr_spell_dash,1,0,0,size,size,view_wview[1] / 2 - view_wview[1] / 4, view_hview[1]-80-size);
+draw_sprite_part(spr_spell_dash,0,0,top,size,size-top,view_wview[1] / 2 - view_wview[1] / 4, view_hview[1]-80-size+top);
+
+
+
+// Draw entetities vagy mi a kuki :D
+if(keyboard_check(vk_alt)){
+    draw_set_valign(fa_bottom);
+    draw_set_halign(fa_right);
+    
+    draw_set_color(c_white);
+    draw_text(view_wview[1], view_hview[1]-25, "Enemies: " + string(instance_number(obj_enemy)));
+    
+    draw_set_color(c_yellow);
+    draw_text(view_wview[1], view_hview[1]-45, "Walls: " + string(instance_number(obj_wall)));
+}
 </string>
           </argument>
         </arguments>
@@ -228,9 +366,7 @@ draw_text(10,45, "Health: " + string(hp))
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>draw_sprite(spr_player,-1,x,y);
-draw_set_color(c_blue);
-draw_circle(x,y,1,false);
+            <string>scr_draw_player();
 </string>
           </argument>
         </arguments>

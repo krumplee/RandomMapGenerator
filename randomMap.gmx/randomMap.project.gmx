@@ -13,6 +13,8 @@
     <sprite>sprites\spr_fireball</sprite>
     <sprite>sprites\spr_enemy_fireball</sprite>
     <sprite>sprites\spr_wall</sprite>
+    <sprite>sprites\spr_wizard_stick</sprite>
+    <sprite>sprites\spr_spell_dash</sprite>
   </sprites>
   <backgrounds name="background">
     <background>background\bg_floor</background>
@@ -25,7 +27,9 @@
     <script>scripts\scr_grid_place_meeting.gml</script>
     <script>scripts\scr_get_path_to_player.gml</script>
     <script>scripts\scr_go_to_spawn.gml</script>
+    <script>scripts\scr_draw_player.gml</script>
   </scripts>
+  <fonts name="fonts"/>
   <objects name="objects">
     <object>objects\Level</object>
     <object>objects\obj_player</object>
@@ -33,6 +37,7 @@
     <object>objects\obj_fireball</object>
     <object>objects\obj_wall</object>
     <object>objects\obj_enemy_fireball</object>
+    <object>objects\obj_player_dash</object>
   </objects>
   <rooms name="rooms">
     <room>rooms\room0</room>
